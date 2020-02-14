@@ -1,0 +1,8 @@
+C:\VS_Projects\AlgLab2\bin\Debug\AlgLab2.exe.config
+C:\VS_Projects\AlgLab2\bin\Debug\AlgLab2.exe
+C:\VS_Projects\AlgLab2\bin\Debug\AlgLab2.pdb
+C:\VS_Projects\AlgLab2\bin\Debug\LybraryForAlgLab.dll
+C:\VS_Projects\AlgLab2\bin\Debug\LybraryForAlgLab.pdb
+C:\VS_Projects\AlgLab2\obj\Debug\AlgLab2Graph.csproj.CopyComplete
+C:\VS_Projects\AlgLab2\obj\Debug\AlgLab2.exe
+C:\VS_Projects\AlgLab2\obj\Debug\AlgLab2.pdb
