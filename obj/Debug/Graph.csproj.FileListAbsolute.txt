@@ -1,0 +1,6 @@
+D:\Проекты  в студии\Graph\bin\Debug\Graph.exe.config
+D:\Проекты  в студии\Graph\bin\Debug\Graph.exe
+D:\Проекты  в студии\Graph\bin\Debug\Graph.pdb
+D:\Проекты  в студии\Graph\obj\Debug\Graph.csprojAssemblyReference.cache
+D:\Проекты  в студии\Graph\obj\Debug\Graph.exe
+D:\Проекты  в студии\Graph\obj\Debug\Graph.pdb
