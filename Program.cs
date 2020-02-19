@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LibraryForAlgLab;
+using System.IO;
 
 namespace Graph
 {
@@ -10,34 +12,140 @@ namespace Graph
     {
         static void Main(string[] args)
         {
-            bool newMatrix = true;
+            bool goOut = false;
+            Graph graph = null;
             do
             {
-                Graph graph = new Graph(5);
-                //if (newMatrix)
-                //{
-                //    graph.CreateAdjacencyMatrix();
-                //    newMatrix = false;
-                //}
-                int[][] matrix = new int[5][];
-                for (int i = 0; i < 5; i++)
+                goOut = false;
+                switch(Subroutines.PrintMenu())
                 {
-                    matrix[i] = new int[5];
-                }
+                    //
+                    //  c - созадть граф (ручками)
+                    //
+                    case 'c':
+                        {
+                            int size;
+                            do
+                            {
+                                do
+                                {
+                                    Console.WriteLine("\nУкажите количество элементов в графе (не более 10) ");
+                                } while (!Int32.TryParse(Console.ReadLine(), out size));
+                            } while (size < 1 || size > 10);
 
-                for (int i = 0; i < 5; i++)
-                {
-                    for (int j = 0; j < 5; j++)
-                    {
-                        matrix[i][j] = Convert.ToInt32(Console.ReadLine());
-                    }
-                    Console.WriteLine("====");
-                }
-                graph.CreateAdjacencyMatrix(matrix);
-                graph.Print();
+                            graph = new Graph(size);
+                            int[][] matrix = new int[size][];
+                            for (int i = 0; i < size; i++)
+                            {
+                                matrix[i] = new int[size];
+                            }
+                            //
+                            // заполняем
+                            //
+                            for (int i = 0; i < size; i++)
+                            {
+                                for (int j = 0; j < size; j++)
+                                {
+                                    int number;
+                                    do
+                                    {
+                                        do
+                                        {
+                                            Console.WriteLine("\nМатрица[" + i + "][" + j + "] = ");
+                                        } while (!Int32.TryParse(Console.ReadLine(), out number));
+                                    } while (number > 1 || number < 0);
+                                    matrix[i][j] = number;
+                                }
+                            }
+                            //
+                            // создаем
+                            //
+                            graph.CreateAdjacencyMatrix(matrix);
+                            //
+                            // сохраняем в файл
+                            //
+                            StreamWriter writer = new StreamWriter("input.dat");
+                            if (writer == null)
+                            {
+                                Console.WriteLine("Граф не был записан в файл. Нажмите что-нибудь...");
+                                Console.ReadKey(true);
+                                break;
+                            }
+                            graph.Print(writer);
+                            writer.Close();
+                            Console.WriteLine("Граф успешно создан. Нажмите что-нибудь...");
+                            Console.ReadKey(true);
+                            break;
+                        }
+                    //
+                    //  r - восстановить граф из файла (рекомендуется)
+                    //
+                    case 'r':
+                        {
+                            try
+                            {
+                                int[][] matrix = GraphHelper.GetMatrixFromFile("input.dat");
+                                graph = new Graph(matrix.Length);
+                                graph.CreateAdjacencyMatrix(matrix);
+                                Console.WriteLine("Граф успешно восстановлен. Нажмите что-нибудь...");
+                                Console.ReadKey(true);
+                                break;
+                            }
+                            catch(Exception e)
+                            {
+                                Console.WriteLine(e.Message);
+                                Console.ReadKey(true);
+                                break;
+                            }
 
-                graph.HamiltonPath();
-            } while (Console.ReadKey().KeyChar != 27);
+                        }
+                    //
+                    // b - показать Гамильтонов путь
+                    //
+                    case 'b':
+                        {
+                            if (graph == null)
+                            {
+                                Console.WriteLine("Граф не существует. Нажмите что-нибудь...");
+                                Console.ReadKey(true);
+                                break;
+                            }
+                            if (graph.HamiltonPath())
+                            {
+                                graph.PrintHamiltonPath(Console.Out);
+                                Console.WriteLine("\nНажмите что-нибудь...");
+                                Console.ReadKey(true);
+                            }
+                            else
+                            {
+                                Console.WriteLine("Пути не существует...");
+                                Console.ReadKey(true);
+                            }
+                            break;
+                        }
+                    //
+                    // d - показать матрицу смежности
+                    //
+                    case 'd':
+                        {
+                            if (graph == null)
+                            {
+                                Console.WriteLine("Граф не существует. Нажмите что-нибудь...");
+                                Console.ReadKey(true);
+                                break;
+                            }
+                            graph.Print(Console.Out);
+                            Console.WriteLine("\nНажмите что-нибудь...");
+                            Console.ReadKey(true);
+                            break;
+                        }
+                    case (char)27:
+                        {
+                            goOut = true;
+                            break;
+                        }
+                }
+            } while (goOut == false);
         }
     }
 }

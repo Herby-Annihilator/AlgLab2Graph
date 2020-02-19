@@ -4,10 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LibraryForAlgLab;
 
 namespace Graph
 {
-    public class Graph
+    public class Graph : IForAlgLabs
     {
         /// <summary>
         /// Матрица смежности
@@ -163,7 +164,8 @@ namespace Graph
             if (stream != null)
             {
                 Console.SetOut(stream);
-            }           
+            }
+            Console.WriteLine();
             for (int i = 0; i < Count; i++)
             {
                 for (int j = 0; j < Count; j++)
@@ -175,6 +177,30 @@ namespace Graph
             if (stream != null)
             {
                 Console.SetOut(oldStream);
+            }
+        }
+
+        /// <summary>
+        /// Заполняет граф
+        /// </summary>
+        /// <param name="matrix">это матрица</param>
+        public void Fill(object matrix)
+        {
+            //CreateAdjacencyMatrix(matrix);
+        }
+
+        public void PrintHamiltonPath(TextWriter writer)
+        {
+            if (pathList != null)
+            {
+                foreach(var number in pathList)
+                {
+                    writer.Write(number + " ");
+                }
+            }
+            else
+            {
+                writer.WriteLine("Пути нет");
             }
         }
     }
