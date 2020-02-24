@@ -158,6 +158,10 @@ namespace Graph
             adjacencyMatrix = matrix;
         }
 
+        /// <summary>
+        /// Выводит матрицу смежности в указанный текстовый поток (если он указан, иначе в консоль)
+        /// </summary>
+        /// <param name="stream"></param>
         public void Print(TextWriter stream = null)
         {
             TextWriter oldStream = Console.Out;
@@ -202,6 +206,103 @@ namespace Graph
             {
                 writer.WriteLine("Пути нет");
             }
+        }
+
+        //
+        //
+        //
+        // Отсюда идет лаба 3 (поиск кратчайшего пути)
+        //
+        //
+        //
+
+        /// <summary>
+        /// Возвращает список вершин, составляющих кратчайший путь от первой вершины до второй.
+        /// Если путь не существует, то вернет null.
+        /// Самый последний элемент списка равен длине данного пути.
+        /// First меньше Second
+        /// </summary>
+        /// <param name="first"></param>
+        /// <param name="second"></param>
+        /// <returns></returns>
+        public List<int> GetMinimumPathBetweenNodes(int first, int second)
+        {
+            List<int> path = null;
+            if (IsNodesCorrect(first, second) == false)
+            {
+                throw new Exception("\nНекорректные вершины\n");
+            }
+            else
+            {
+                Queue<int> toVisit = new Queue<int>();  // очередь, в которой храним элементы для последующей обработки
+                int[] smallestWeights = new int[count];  // тут хранятся самые короткие пути от начальной вершины до текущей 
+                for (int i = 0; i < count; i++)
+                {
+                    smallestWeights[i] = 100000;
+                }
+                smallestWeights[first] = 0;
+
+                for (int i = 0; i < visitedElements.Length; i++)
+                {
+                    visitedElements[i] = false;
+                }
+                visitedElements[first] = true;
+                int i = first;
+                while(i != second)  // нужен цикл, пока есть соседи для просмотра, i каждый раз разное 
+                {
+                    for (int j = 0; j < count; j++)
+                    {
+                        if (adjacencyMatrix[i][j] > 0 && visitedElements[j] == false)  // значит, что этот сосед еще не посещался
+                        {
+                            int currentWeight = smallestWeights[i] + adjacencyMatrix[i][j];  // i - текущий рассматриваемый узел, j - его сосед
+                            if (currentWeight < smallestWeights[j])
+                            {
+                                smallestWeights[j] = currentWeight;  // устанавливаем минимальный по весу путь до данного узла (соседа)
+                            }
+                            toVisit.Enqueue(j);  // добавим соседа для следующей его обработки
+                        }
+                    }
+                    visitedElements[i] = true;
+                    if (toVisit.Count > 0)
+                    {
+                        i = toVisit.Dequeue();
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                // запустить процедуру подсчета пути и возврата
+
+
+            }
+            return path;
+        }
+
+
+        /// <summary>
+        /// Указывает, являются ли заданные вершины корректными
+        /// </summary>
+        /// <param name="first"></param>
+        /// <param name="second"></param>
+        /// <returns></returns>
+        private bool IsNodesCorrect(int first, int second)
+        {
+            bool isCorrect = true;
+            if (first == second)
+            {
+                isCorrect = false;
+            }
+            else if (first < 0 || second < 0)
+            {
+                isCorrect = false;
+            }
+            else if (first >= count || second >= count)
+            {
+                isCorrect = false;
+            }
+            return isCorrect;
         }
     }
 }
