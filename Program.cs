@@ -104,21 +104,86 @@ namespace Graph
                     //
                     case 'b':
                         {
+                            
                             if (graph == null)
                             {
                                 Console.WriteLine("Граф не существует. Нажмите что-нибудь...");
                                 Console.ReadKey(true);
                                 break;
                             }
-                            if (graph.HamiltonPath())
+                            int pairsCount = 0;
+                            do
                             {
-                                graph.PrintHamiltonPath(Console.Out);
-                                Console.WriteLine("\nНажмите что-нибудь...");
+                                do
+                                {
+                                    Console.Write("Сколько пар вы зададите (не менее 1) ");
+                                } while (!Int32.TryParse(Console.ReadLine(), out pairsCount));
+                            } while (pairsCount < 1 || pairsCount > 10);
+
+                            int[][] pairs = new int[pairsCount][];
+                            for (int i = 0; i < pairsCount; i++)
+                            {
+                                int first, second;
+                                Console.WriteLine("\nПара " + (i + 1));
+                                do
+                                {
+                                    do
+                                    {
+                                        Console.Write("\nFirst = ");
+                                    } while (!Int32.TryParse(Console.ReadLine(), out first));
+
+                                    do
+                                    {
+                                        Console.Write("\nSecond = ");
+                                    } while (!Int32.TryParse(Console.ReadLine(), out second));
+                                } while (!graph.IsNodesCorrect(first, second));
+                                pairs[i] = new int[] { first, second};
+                                Console.WriteLine("=================================");
+                            }
+
+
+                            List<int>[] pathList = new List<int>[pairsCount];
+                            for (int i = 0; i < pairsCount; i++)
+                            {
+                                pathList[i] = graph.GetMinimumPathBetweenNodes(pairs[i][0], pairs[i][1]);
+                            }
+
+                            bool isPath = false;
+                            for (int i = 0; i < pairsCount; i++)
+                            {
+                                for (int j = i + 1; j < pairsCount; j++)
+                                {
+                                    if (pathList[i] != null && pathList[j] != null)
+                                    {
+                                        if (pathList[i][pathList[i].Count - 1] == pathList[j][pathList[i].Count - 1])
+                                        {
+                                            isPath = true;
+                                            Console.WriteLine("\nКратчайший путь одинакового веса между парами вершин " 
+                                                + pairs[i][0] + "," + pairs[i][1] + " и " + pairs[j][0] + "," + pairs[j][1]
+                                                + " = " + pathList[i][pathList[i].Count - 1]);
+                                            Console.Write("\nПуть от " + pairs[i][0] + " до " + pairs[i][1] + " : ");
+                                            for (int k = 0; k < pathList[i].Count - 1; k++)
+                                            {
+                                                Console.Write(pathList[i][k] + " ");
+                                            }
+
+                                            Console.Write("\nПуть от " + pairs[j][0] + " до " + pairs[j][1] + " : ");
+                                            for (int k = 0; k < pathList[j].Count - 1; k++)
+                                            {
+                                                Console.Write(pathList[j][k] + " ");
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            if (isPath == false)
+                            {
+                                Console.WriteLine("Пути не существует...");
                                 Console.ReadKey(true);
                             }
                             else
                             {
-                                Console.WriteLine("Пути не существует...");
+                                Console.WriteLine("\nНажмите что-нибудь...");
                                 Console.ReadKey(true);
                             }
                             break;

@@ -228,17 +228,18 @@ namespace Graph
         public List<int> GetMinimumPathBetweenNodes(int first, int second)
         {
             List<int> path = null;
+            const int VERYMUTCH = 100000;
             if (IsNodesCorrect(first, second) == false)
             {
                 throw new Exception("\nНекорректные вершины\n");
             }
             else
             {
-                Queue<int> toVisit = new Queue<int>();  // очередь, в которой храним элементы для последующей обработки
+                
                 int[] smallestWeights = new int[count];  // тут хранятся самые короткие пути от начальной вершины до текущей 
                 for (int i = 0; i < count; i++)
                 {
-                    smallestWeights[i] = 100000;
+                    smallestWeights[i] = VERYMUTCH;
                 }
                 smallestWeights[first] = 0;
 
@@ -247,35 +248,57 @@ namespace Graph
                     visitedElements[i] = false;
                 }
                 visitedElements[first] = true;
-                int i = first;
-                while(i != second)  // нужен цикл, пока есть соседи для просмотра, i каждый раз разное 
+                int currentNode = first;
+                int smallestWeight = 0;               
+                while(smallestWeight < VERYMUTCH)  // нужен цикл, пока есть соседи для просмотра, i каждый раз разное 
                 {
-                    for (int j = 0; j < count; j++)
+                    int i = currentNode;
+                    visitedElements[i] = true;
+                    for (int j = 0; j < count; j++)  // смотрим всех соседей для i
                     {
-                        if (adjacencyMatrix[i][j] > 0 && visitedElements[j] == false)  // значит, что этот сосед еще не посещался
+                        //если вес пути соседа больше, чем от текущего узла + ребро
+                        if (adjacencyMatrix[i][j] > 0 && smallestWeights[j] > smallestWeights[i] + adjacencyMatrix[i][j])
                         {
-                            int currentWeight = smallestWeights[i] + adjacencyMatrix[i][j];  // i - текущий рассматриваемый узел, j - его сосед
-                            if (currentWeight < smallestWeights[j])
-                            {
-                                smallestWeights[j] = currentWeight;  // устанавливаем минимальный по весу путь до данного узла (соседа)
-                            }
-                            toVisit.Enqueue(j);  // добавим соседа для следующей его обработки
+                            // поменять вес до соседа
+                            smallestWeights[j] = smallestWeights[i] + adjacencyMatrix[i][j];
                         }
                     }
-                    visitedElements[i] = true;
-                    if (toVisit.Count > 0)
+                    smallestWeight = VERYMUTCH;  // условие становки - если просмотрены все доступные вершины
+
+                    for (int j = 0; j < count; j++)  // ищем минимум до соседа
                     {
-                        i = toVisit.Dequeue();
-                    }
-                    else
-                    {
-                        break;
+                        if (visitedElements[j] == false && smallestWeights[j] < smallestWeight)   // если данный узел еще не посещался и расстояние до него еще не посчитано
+                        {
+                            // берем этот узел на рассмотрение
+                            smallestWeight = smallestWeights[j];
+                            currentNode = j;
+                        }
                     }
                 }
 
                 // запустить процедуру подсчета пути и возврата
 
+                if (smallestWeights[second] == VERYMUTCH)
+                {
+                    return null;
+                }
+                path = new List<int>();
+                path.Add(smallestWeights[second]);
+                path.Add(second);
 
+                currentNode = second;
+                while (currentNode != first)
+                {
+                    for (int i = 0; i < count; i++)
+                    {
+                        if (adjacencyMatrix[currentNode][i] > 0 && smallestWeights[currentNode] - adjacencyMatrix[currentNode][i] == smallestWeights[i])  // значит я пришел сюда из этого соседа
+                        {
+                            currentNode = i;
+                            path.Add(i);
+                        }
+                    }
+                }
+                path.Reverse();
             }
             return path;
         }
@@ -287,7 +310,7 @@ namespace Graph
         /// <param name="first"></param>
         /// <param name="second"></param>
         /// <returns></returns>
-        private bool IsNodesCorrect(int first, int second)
+        public bool IsNodesCorrect(int first, int second)
         {
             bool isCorrect = true;
             if (first == second)
