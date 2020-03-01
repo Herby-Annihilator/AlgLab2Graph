@@ -111,37 +111,10 @@ namespace Graph
                                 Console.ReadKey(true);
                                 break;
                             }
-                            int pairsCount = 0;
-                            do
-                            {
-                                do
-                                {
-                                    Console.Write("Сколько пар вы зададите (не менее 1) ");
-                                } while (!Int32.TryParse(Console.ReadLine(), out pairsCount));
-                            } while (pairsCount < 1 || pairsCount > 10);
 
-                            int[][] pairs = new int[pairsCount][];
-                            for (int i = 0; i < pairsCount; i++)
-                            {
-                                int first, second;
-                                Console.WriteLine("\nПара " + (i + 1));
-                                do
-                                {
-                                    do
-                                    {
-                                        Console.Write("\nFirst = ");
-                                    } while (!Int32.TryParse(Console.ReadLine(), out first));
+                            int[][] pairs = graph.GetArrayOfPairs();
 
-                                    do
-                                    {
-                                        Console.Write("\nSecond = ");
-                                    } while (!Int32.TryParse(Console.ReadLine(), out second));
-                                } while (!graph.IsNodesCorrect(first, second));
-                                pairs[i] = new int[] { first, second};
-                                Console.WriteLine("=================================");
-                            }
-
-
+                            int pairsCount = pairs.GetLength(0);
                             List<int>[] pathList = new List<int>[pairsCount];
                             for (int i = 0; i < pairsCount; i++)
                             {
@@ -155,7 +128,7 @@ namespace Graph
                                 {
                                     if (pathList[i] != null && pathList[j] != null)
                                     {
-                                        if (pathList[i][pathList[i].Count - 1] == pathList[j][pathList[i].Count - 1])
+                                        if (pathList[i][pathList[i].Count - 1] == pathList[j][pathList[j].Count - 1])
                                         {
                                             isPath = true;
                                             Console.WriteLine("\nКратчайший путь одинакового веса между парами вершин " 

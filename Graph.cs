@@ -327,5 +327,44 @@ namespace Graph
             }
             return isCorrect;
         }
+
+
+        public int[][] GetArrayOfPairs()
+        {
+            List<int>[] pairs = new List<int>[count];
+            for (int i = 0; i < count; i++)
+            {
+                pairs[i] = new List<int>();
+                pairs[i].Add(i);
+                for (int j = 0; j < count; j++)
+                {
+                    if (adjacencyMatrix[i][j] > 0)
+                    {
+                        pairs[i].Add(j);
+                    }
+                }
+            }
+
+            int pairsCount = 0;
+            for (int i = 0; i < pairs.Length; i++)
+            {
+                pairsCount += pairs[i].Count - 1;
+            }
+            int currentIndex = 0;
+            int[][] toReturn = new int[pairsCount][];
+            for (int i = 0; i < pairs.Length; i++)
+            {
+                if (pairs[i].Count > 1)
+                {
+                    for (int j = 1; j < pairs[i].Count; j++)
+                    {
+                        toReturn[currentIndex] = new int[] { pairs[i][0], pairs[i][j]};
+                        currentIndex++;
+                    }
+                }
+            }
+
+            return toReturn;
+        }
     }
 }
